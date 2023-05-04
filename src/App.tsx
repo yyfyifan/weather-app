@@ -1,12 +1,12 @@
-import {FaBeer} from 'react-icons/fa';
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 function App() {
-
-    return (
-        <div>Hello World
-            <FaBeer/>
-        </div>
-    )
+  return (
+    <div>
+      Hello World
+      <FaMapMarkerAlt />
+    </div>
+  );
 }
 
-export default App
+export default App;
