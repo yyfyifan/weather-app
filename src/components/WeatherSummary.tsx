@@ -6,19 +6,19 @@ const determineImagePath = (weather: string) => {
   let imageSrc = "";
   switch (weather) {
     case "Clear":
-      imageSrc = "../assets/clear.png";
+      imageSrc = "/clear.png";
       break;
     case "Rain":
-      imageSrc = "../assets/rain.png";
+      imageSrc = "/rain.png";
       break;
     case "Snow":
-      imageSrc = "../assets/snow.png";
+      imageSrc = "/snow.png";
       break;
     case "Clouds":
-      imageSrc = "../assets/cloud.png";
+      imageSrc = "/cloud.png";
       break;
     case "Haze":
-      imageSrc = "../assets/mist.png";
+      imageSrc = "/mist.png";
       break;
     default:
       imageSrc = "";
@@ -31,7 +31,7 @@ const WeatherImage: React.FC<{ weather: string }> = ({ weather }) => {
 
   // Import the image based on the weather description keyword.
   useEffect(() => {
-    import(determineImagePath(weather)).then((image) => setWeatherImage(image.default));
+    setWeatherImage(determineImagePath(weather));
   }, [weather]);
 
   return (
