@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { css } from "@emotion/react";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import { useTitle } from "react-use";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchButton: React.FC<{ onClick: React.MouseEventHandler<HTMLButtonElement> }> = ({
   onClick,
@@ -30,18 +31,29 @@ const SearchButton: React.FC<{ onClick: React.MouseEventHandler<HTMLButtonElemen
   );
 };
 
-interface Props {
-  onSearch: (location: string) => void;
-}
-const LocationSearchBox: React.FC<Props> = ({ onSearch }) => {
-  const [location, setLocation] = useState("");
+const LocationSearchBox = () => {
+  const [searchLocation, setSearchLocation] = useState("");
+  const navigate = useNavigate();
+  const urlLocation = useLocation();
 
-  useTitle(`Weather App${location ? ` - ${location.toUpperCase()}` : ""}`);
+  useTitle(`Weather App${searchLocation ? ` - ${searchLocation.toUpperCase()}` : ""}`);
+
+  // Keep the input text in sync with the current location when the URL changes.
+  useEffect(() => {
+    setSearchLocation(decodeURI(urlLocation.pathname.substring(1)));
+  }, [urlLocation]);
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter") {
-      onSearch(location);
+      handleSetLocation();
     }
+  };
+
+  const handleSetLocation = () => {
+    if (`/${searchLocation}` === urlLocation.pathname) {
+      return;
+    }
+    navigate(`${searchLocation}`);
   };
 
   return (
@@ -64,8 +76,8 @@ const LocationSearchBox: React.FC<Props> = ({ onSearch }) => {
       <input
         type="text"
         placeholder="Enter your location"
-        value={location}
-        onChange={(event) => setLocation(event.target.value)}
+        value={searchLocation}
+        onChange={(event) => setSearchLocation(event.target.value)}
         autoFocus
         onKeyDown={handleKeyDown}
         css={css`
@@ -84,7 +96,7 @@ const LocationSearchBox: React.FC<Props> = ({ onSearch }) => {
           }
         `}
       />
-      <SearchButton onClick={() => onSearch(location)} />
+      <SearchButton onClick={handleSetLocation} />
     </div>
   );
 };
