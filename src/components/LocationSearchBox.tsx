@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import { useTitle } from "react-use";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useLocationPath } from "../hooks/useLocationPath.ts";
 
 const SearchButton: React.FC<{ onClick: React.MouseEventHandler<HTMLButtonElement> }> = ({
   onClick,
@@ -32,16 +33,16 @@ const SearchButton: React.FC<{ onClick: React.MouseEventHandler<HTMLButtonElemen
 };
 
 const LocationSearchBox = () => {
+  // Stored in lower case.
   const [searchLocation, setSearchLocation] = useState("");
   const navigate = useNavigate();
-  const urlLocation = useLocation();
-
+  const locationPath = useLocationPath();
   useTitle(`Weather App${searchLocation ? ` - ${searchLocation.toUpperCase()}` : ""}`);
 
   // Keep the input text in sync with the current location when the URL changes.
   useEffect(() => {
-    setSearchLocation(decodeURI(urlLocation.pathname.substring(1)));
-  }, [urlLocation]);
+    setSearchLocation(locationPath.toLowerCase());
+  }, [locationPath]);
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter") {
@@ -50,10 +51,10 @@ const LocationSearchBox = () => {
   };
 
   const handleSetLocation = () => {
-    if (`/${searchLocation}` === urlLocation.pathname) {
+    if (searchLocation.toLowerCase() === locationPath.toLowerCase()) {
       return;
     }
-    navigate(`${searchLocation}`);
+    navigate(searchLocation);
   };
 
   return (
@@ -77,7 +78,7 @@ const LocationSearchBox = () => {
         type="text"
         placeholder="Enter your location"
         value={searchLocation}
-        onChange={(event) => setSearchLocation(event.target.value)}
+        onChange={(event) => setSearchLocation(event.target.value.toLowerCase())}
         autoFocus
         onKeyDown={handleKeyDown}
         css={css`

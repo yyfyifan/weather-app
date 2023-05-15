@@ -1,10 +1,12 @@
 import React from "react";
 import { css } from "@emotion/react";
+import { useLocationPath } from "../../hooks/useLocationPath.ts";
 
 interface Props {
   children: React.ReactNode;
 }
 const Container: React.FC<Props> = ({ children }) => {
+  const locationPath = useLocationPath();
   return (
     <div
       css={css`
@@ -12,7 +14,7 @@ const Container: React.FC<Props> = ({ children }) => {
         height: auto;
         position: relative;
         background-color: #fff;
-        padding: 28px 32px;
+        padding: ${locationPath ? 28 : 10}px 32px;
         overflow: hidden;
         border-radius: 18px;
         font-family: "Roboto", sans-serif;

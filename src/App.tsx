@@ -5,13 +5,13 @@ import Container from "./components/layouts/Container.tsx";
 import { initialState, reducer } from "./stores/weather-data.ts";
 import NotFound from "./components/NotFound.tsx";
 import { DataResponse, ErrorResponse } from "./interfaces/weather-data.ts";
-import { useLocation } from "react-router-dom";
 import WeatherBox from "./components/WeatherBox.tsx";
+import { useLocationPath } from "./hooks/useLocationPath.ts";
 
 function App() {
   // TODO: Move the weather data into the 'WeatherBox' component.
   const [state, dispatch] = useReducer(reducer, initialState);
-  const location = useLocation();
+  const locationPath = useLocationPath();
 
   async function fetchWeatherData(location: string) {
     if (location.trim().length === 0) {
@@ -32,12 +32,8 @@ function App() {
   }
 
   useEffect(() => {
-    if (location.pathname.startsWith("/")) {
-      const weatherLocation = location.pathname.substring(1);
-
-      fetchWeatherData(decodeURI(weatherLocation));
-    }
-  }, [location]);
+    fetchWeatherData(locationPath);
+  }, [locationPath]);
 
   return (
     <Container>
